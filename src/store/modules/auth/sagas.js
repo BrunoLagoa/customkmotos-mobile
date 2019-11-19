@@ -14,12 +14,12 @@ export function* signIn({ payload }) {
     });
     const { token } = response.data;
 
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
     const responseProfile = yield call(api.post, 'profiles', {
       token,
     });
     const user = responseProfile.data;
-
-    api.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(singInSuccess(token, user));
   } catch (error) {
@@ -28,4 +28,33 @@ export function* signIn({ payload }) {
   }
 }
 
-export default all([takeLatest('@auth/SIGN_IN_REQUEST', signIn)]);
+export function* signUp({ payload }) {
+  try {
+    const { username, email, password } = payload;
+
+    yield call(api.post, 'users', {
+      username,
+      email,
+      password,
+    });
+  } catch (error) {
+    Alert.alert('Falha no cadastro', 'verifique seus dados');
+    yield put(singFailure());
+  }
+}
+
+export function setToken({ payload }) {
+  if (!payload) return;
+
+  const { token } = payload.auth;
+
+  if (token) {
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+  }
+}
+
+export default all([
+  takeLatest('persist/REHYDRATE', setToken),
+  takeLatest('@auth/SIGN_IN_REQUEST', signIn),
+  takeLatest('@auth/SIGN_UP_REQUEST', signUp),
+]);
