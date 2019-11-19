@@ -1,21 +1,54 @@
 import React from 'react';
-import { Text } from 'react-native';
+import PropTypes from 'prop-types';
+import { Image } from 'react-native';
 
-import Input from '~/components/Input';
-import Button from '~/components/Button';
+import logo from '~/assets/logo.png';
+
 import Background from '~/components/Background';
 
-export default function SignIn() {
+import {
+  Container,
+  Form,
+  FormInput,
+  SubmitButton,
+  SignLink,
+  SignInText,
+} from './styles';
+
+export default function SignIn({ navigation }) {
   return (
     <Background>
-      <Text>SignIn</Text>
-      <Input
-        style={{ marginTop: 30 }}
-        icon="call"
-        placeholder="Digite seu nome"
-      />
+      <Container>
+        <Image source={logo} />
 
-      <Button>Entrar</Button>
+        <Form>
+          <FormInput
+            icon="mail-outline"
+            keyboardType="email-address"
+            autoCorrect={false}
+            autoCapitalize="none"
+            placeholder="Digite seu e-mail"
+          />
+
+          <FormInput
+            icon="lock-outline"
+            secureTextEntry
+            placeholder="Digite seu senha"
+          />
+
+          <SubmitButton onPress={() => {}}>Acessar</SubmitButton>
+        </Form>
+
+        <SignLink onPress={() => navigation.navigate('SignUp')}>
+          <SignInText>Criar conta</SignInText>
+        </SignLink>
+      </Container>
     </Background>
   );
 }
+
+SignIn.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
