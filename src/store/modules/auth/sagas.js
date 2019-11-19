@@ -1,8 +1,8 @@
+import { Alert } from 'react-native';
 import { takeLatest, call, put, all } from 'redux-saga/effects';
-import { toast } from 'react-toastify';
-import { singInSuccess, singFailure } from './actions';
-
 import api from '~/services/api';
+
+import { singInSuccess, singFailure } from './actions';
 
 export function* signIn({ payload }) {
   try {
@@ -19,9 +19,11 @@ export function* signIn({ payload }) {
     });
     const user = responseProfile.data;
 
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
     yield put(singInSuccess(token, user));
   } catch (error) {
-    toast.error('Falha na autenticação, verifique seus dados');
+    Alert.alert('Falha na autenticação', 'verifique seus dados');
     yield put(singFailure());
   }
 }
