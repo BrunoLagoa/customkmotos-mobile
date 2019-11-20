@@ -8,6 +8,8 @@ export function* signIn({ payload }) {
   try {
     const { email, password } = payload;
 
+    console.tron.log('SAGAS BRUNO', payload);
+
     const response = yield call(api.post, 'sessions', {
       email,
       password,
